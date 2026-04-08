@@ -46,3 +46,28 @@ jobs:
           # Implement GitHub Actions caching for Docker layers
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/stem-separator:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/stem-separator:buildcache,mode=max
+
+  deploy:
+    name: Deploy to Self-Hosted Runner
+    needs: build-and-push
+    # Only deploy when not building a PR
+    if: github.event_name != 'pull_request'
+    runs-on: self-hosted
+
+    steps:
+      - name: Stop and remove existing container
+        run: |
+          docker stop sonicsplit_app || true
+          docker rm sonicsplit_app || true
+
+      - name: Pull the latest Docker Image
+        run: |
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/stem-separator:latest
+
+      - name: Run the new container
+        run: |
+          docker run -d \
+            --name sonicsplit_app \
+            -p 8000:8000 \
+            --restart unless-stopped \
+            ${{ secrets.DOCKERHUB_USERNAME }}/stem-separator:latest
