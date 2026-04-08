@@ -1,16 +1,16 @@
-# SonicSplit: AI Stem Separator
+# SonicSplit: AI Stem Separator & Genre Classifier
 
-SonicSplit is a fully containerized, lightweight API and web application that leverages state-of-the-art AI (Demucs) to separate audio tracks into their constituent stems: vocals, drums, bass, and other.
+SonicSplit is a fully containerized, lightweight API and web application that leverages sophisticated MLOps to conduct dual-phase audio processing: separating physical tracks into stems alongside identifying the overarching musical genre.
 
-It features a premium frontend UI mapped to an optimized FastAPI Python backend and is designed to run consistently on Windows, macOS, and Linux via Docker.
+It features a premium frontend UI mapped to an optimized FastAPI Python backend and is designed to run consistently as a native web service bridging across Windows, macOS, and Linux servers.
 
 ## Features
 
-- **AI Separation**: Uses Facebook's Demucs (`htdemucs` CPU optimized) for high-grade source separation.
-- **Modern Web Interface**: Responsive, drag-and-drop enabled interface with glassmorphism aesthetics.
-- **FastAPI Backend**: Efficient background task management to handle large audio files and auto-cleanup temporary assets. 
-- **Dockerized Foundation**: Hassle-free installation. Resolves all complex Linux dependency issues (like `ffmpeg` requirements and PyTorch weight bindings) natively out of the box.
-- **Zero-Touch Deployments**: Fully automated GitHub Actions CI/CD to build and push container updates to Docker Hub.
+- **Dual-Phase ML Pipeline**: Simultaneously categorizes musical input recursively using Hugging Face Transformers while dynamically stripping instrumentals out natively through Demucs.
+- **Modern Web Interface**: Responsive, drag-and-drop enabled UI with glowing Audio Visualizers, glassmorphism aesthetics, and Spring-physics hover functionality.
+- **FastAPI Backend**: Uses an asynchronous REST structure to seamlessly bundle heavy AI workflows asynchronously, automatically clearing RAM/Disk space after processing wraps up. 
+- **Dockerized Foundation**: Hassle-free deployment natively running on port `80`. Resolves all complex Linux dependency issues (like `ffmpeg` constraints and PyTorch/Transformer pipeline integrations) out of the box.
+- **Continuous Deployment**: Fully automated GitHub Actions pipeline executing `docker pull` locally onto your self-hosted runner directly trailing commits.
 
 ---
 
@@ -29,15 +29,19 @@ You only need to have [Docker Desktop](https://www.docker.com/products/docker-de
    docker compose up --build
    ```
 
-4. Once the container is running and uvicorn boots, open your browser and navigate to:
-   **[http://localhost:8000](http://localhost:8000)**
+4. Since the platform now utilizes universal port 80 natively, you can access the interface cleanly by typing into your browser (bypassing any port number!):
+   **[http://localhost](http://localhost)** 
+   *(Network Mapping: Also accessible on other smartphones/laptops via your local WiFi IP address, e.g., `http://172.30.1.22`!)*
 
-*Note: The first time you upload a track and press "Extract Stems", Demucs will automatically download its initial model weights. Processing will complete, and your browser will automatically download a `.zip` file of the separated tracks.*
+*Note: The very first time you trigger an analysis, the Hugging Face and Demucs packages will download roughly ~450MB of respective architecture neural weights into the background environment structure. Please be patient while your Terminal downloads these model buffers.*
 
 ---
 
 ## Infrastructure Operations
 
-- **Build / Packaging**: The production `Dockerfile` runs on Debian Linux `python:3.10-slim`.
-- **CI/CD Configuration**: Controlled via `ci.yml`. On every push to the `master` branch, GitHub Actions builds the image using Docker Buildx caching and pushes the image directly to your Docker Hub repository. 
-- **Secrets Management**: Update your GitHub Repository Secrets (`DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`) to allow automated CI pushes.
+- **Build / Packaging**: The `Dockerfile` natively integrates Debian Linux `python:3.10-slim`.
+- **CI/CD Lifecycle**: Structured sequentially inside `ci.yml`. On every `push` or merge to the `master` branch:
+  1. Compiles the image dynamically via Docker `buildx` optimized layers.
+  2. Pushes directly to Docker Hub registry endpoints.
+  3. Reboots the locally configured GitHub Action Desktop Daemon seamlessly, shutting down obsolete components and running the integrated changes live on standard HTTP.
+- **GitHub Secrets Managed**: Be sure you securely embed your `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` secrets online under Repo configurations to prevent Docker Hub pipeline blocks!
