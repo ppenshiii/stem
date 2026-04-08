@@ -68,4 +68,4 @@ jobs:
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/stem-separator:latest
 
       - name: Run the new container
-        run: docker run -d --name sonicsplit_app -p 8000:8000 --restart unless-stopped ${{ secrets.DOCKERHUB_USERNAME }}/stem-separator:latest
+        run: docker run -d --name sonicsplit_app -p 80:8000 --restart unless-stopped ${{ secrets.DOCKERHUB_USERNAME }}/stem-separator:latest
