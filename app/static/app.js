@@ -13,9 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const downloadLink = document.getElementById('download-link');
     const retryBtn = document.getElementById('retry-btn');
 
+    // Genre integration
+    const detectedGenre = document.getElementById('detected-genre');
+    const genreConfidence = document.getElementById('genre-confidence');
+
     let currentFile = null;
 
-    // Drag and drop setup
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
         dropZone.addEventListener(eventName, preventDefaults, false);
     });
@@ -55,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
     processBtn.addEventListener('click', async () => {
         if (!currentFile) return;
 
-        // UI transition
         fileInfo.classList.add('hidden');
         loadingScreen.classList.remove('hidden');
 
@@ -63,7 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('file', currentFile);
 
         try {
-            const response = await fetch('/api/separate', {
+            // New Asynchronous API Architecture
+            const response = await fetch('/api/analyze', {
                 method: 'POST',
                 body: formData
             });
@@ -73,15 +76,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(errData.detail || `Server error: ${response.status}`);
             }
 
-            // It returns a blob (the zip file)
-            const blob = await response.blob();
-            const downloadUrl = URL.createObjectURL(blob);
+            // Expect a JSON manifest payload containing the genre + job token
+            const data = await response.json();
+            
+            // Map JSON properties to UI framework
+            detectedGenre.innerText = data.genre;
+            genreConfidence.innerText = `Confidence: ${data.confidence}%`;
             
             loadingScreen.classList.add('hidden');
             resultScreen.classList.remove('hidden');
             
-            downloadLink.href = downloadUrl;
-            downloadLink.download = `separated_${currentFile.name}.zip`;
+            // Update physical link mapping to redirect directly to the zip payload 
+            downloadLink.href = `/api/download/${data.job_id}/${encodeURIComponent(data.filename)}`;
 
         } catch (err) {
             loadingScreen.classList.add('hidden');
