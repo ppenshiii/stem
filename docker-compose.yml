@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  sonicsplit:
+    build: .
+    container_name: sonicsplit_app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/workspace/app
+    environment:
+      # Pre-download models if wanted, or let demucs handle it on first run
+      - TORCH_HOME=/workspace/models
