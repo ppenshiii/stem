@@ -21,6 +21,7 @@
         </header>
 
         <main>
+            <!-- Drop Zone -->
             <div id="drop-zone" class="upload-area">
                 <div class="icon-wrap">
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -34,11 +35,16 @@
                 <input type="file" id="file-upload" accept="audio/*" hidden>
             </div>
             
+            <!-- File Action State -->
             <div id="file-info" class="hidden interactive-box">
                 <p class="file-name" id="selected-file-name"></p>
-                <button id="process-btn" class="primary-btn">Extract Stems</button>
+                <div class="action-buttons-wrap">
+                    <button id="genre-btn" class="secondary-btn">Predict ML Genre</button>
+                    <button id="process-btn" class="primary-btn">Extract Stems</button>
+                </div>
             </div>
 
+            <!-- Loading State -->
             <div id="loading" class="hidden">
                 <div class="visualizer">
                     <div class="bar"></div>
@@ -47,10 +53,34 @@
                     <div class="bar"></div>
                     <div class="bar"></div>
                 </div>
-                <p class="pulse-text">Analyzing & Separating Audio Stems...</p>
-                <p class="sub-text">Neural networks are isolating vocals, drums, and bass.</p>
+                <p class="pulse-text" id="loading-header">Analyzing Audio...</p>
+                <p class="sub-text" id="loading-desc">Executing Machine Learning Pipelines.</p>
             </div>
 
+            <!-- Genre Result State -->
+            <div id="genre-result" class="hidden result-area">
+                <div class="genre-flex">
+                    <div>
+                        <p class="label-text">Model Prediction</p>
+                        <p id="detected-genre" class="genre-title">Unknown</p>
+                    </div>
+                    
+                    <!-- Confidence Circular Gauge -->
+                    <div class="circular-chart-wrap">
+                        <svg viewBox="0 0 36 36" class="circular-chart">
+                            <path class="circle-bg"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path class="circle" id="confidence-circle" stroke-dasharray="0, 100"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <text x="18" y="20.35" class="percentage" id="confidence-text">0%</text>
+                            <text x="18" y="25" class="percentage-label">Confidence</text>
+                        </svg>
+                    </div>
+                </div>
+                <button id="back-genre-btn" class="secondary-btn w-100">Back</button>
+            </div>
+
+            <!-- Stem Separator Result State -->
             <div id="result" class="hidden result-area">
                 <div class="success-icon-wrap">
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -58,20 +88,15 @@
                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
                 </div>
-                <p class="success-title">Analysis & Separation Complete!</p>
-                
-                <div class="genre-badge" style="background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 1rem; margin-bottom: 2rem;">
-                    <p style="font-size: 0.9rem; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px;">AI Detected Genre</p>
-                    <p id="detected-genre" style="font-size: 1.8rem; font-weight: 700; color: #fff; margin-top: 0.2rem;">Unknown</p>
-                    <p id="genre-confidence" style="font-size: 0.85rem; color: #bae6fd; margin-top: 0.2rem;"></p>
-                </div>
-
-                <a id="download-link" href="#" class="primary-btn success-btn">Download Stems (.zip)</a>
+                <p class="success-title">Separation Complete!</p>
+                <a id="download-link" href="#" class="primary-btn success-btn w-100">Download Stems (.zip)</a>
+                <button id="close-download-btn" class="secondary-btn w-100" style="margin-top: 10px;">Back</button>
             </div>
             
+            <!-- Error State -->
             <div id="error-msg" class="hidden error-area fade-in">
                 <p id="error-text"></p>
-                <button id="retry-btn" class="secondary-btn">Try Again</button>
+                <button id="retry-btn" class="secondary-btn w-100">Try Again</button>
             </div>
         </main>
     </div>
