@@ -55,10 +55,13 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Stop and remove existing container
-        run: |
-          docker stop sonicsplit_app || true
-          docker rm sonicsplit_app || true
+      - name: Stop existing container
+        continue-on-error: true
+        run: docker stop sonicsplit_app
+
+      - name: Remove existing container
+        continue-on-error: true
+        run: docker rm sonicsplit_app
 
       - name: Pull the latest Docker Image
         run: |
