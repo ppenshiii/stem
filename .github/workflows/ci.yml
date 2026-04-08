@@ -61,7 +61,7 @@ jobs:
 
       - name: Remove existing container
         continue-on-error: true
-        run: docker rm sonicsplit_app
+        run: docker rm -f sonicsplit_app
 
       - name: Pull the latest Docker Image
         run: |
