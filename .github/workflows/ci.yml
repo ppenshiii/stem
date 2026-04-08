@@ -1,4 +1,4 @@
-name: Docker CI/CD - Face Recognition App
+name: Docker CI/CD - Stem Separator App
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v4
 
-      # Set up Buildx for multi-architecture builds & advanced caching (crucial for slow C++ compilations)
+      # Set up Buildx for multi-architecture builds & advanced caching
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -29,7 +29,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/face-recognition-app
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/stem-separator
           # Tag with git SHA and also tag 'latest' on main branch pushes
           tags: |
             type=sha,format=long
@@ -39,11 +39,10 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          # Assuming you renamed it to just Dockerfile in your repo, otherwise use ./Dockerfile.face_rec
           file: ./Dockerfile 
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          # Implement GitHub Actions caching for Docker layers to dramatically speed up Dlib/OpenCV recompiles
+          # Implement GitHub Actions caching for Docker layers
           cache-from: type=gha
           cache-to: type=gha,mode=max
